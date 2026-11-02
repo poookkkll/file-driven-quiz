@@ -1,0 +1,128 @@
+#include <stdio.h>
+#include <string.h>
+
+// Structure to hold question details
+struct Question {
+    char text[150];
+    char optA[60];
+    char optB[60];
+    char optC[60];
+    char optD[60];
+    char ans;
+};
+
+int main() {
+    char studentName[50];
+    int score = 0;
+    char userAns;
+    int totalQuestions = 8;
+
+    // 8 Questions defined directly inside the code
+    struct Question q[8] = {
+        {
+            "What is the correct extension of a C source file?",
+            ".c", ".cpp", ".class", ".java",
+            'A'
+        },
+        {
+            "Which format specifier is used to print an integer in C?",
+            "%c", "%f", "%d", "%s",
+            'C'
+        },
+        {
+            "Which loop is guaranteed to execute at least once?",
+            "for loop", "while loop", "do-while loop", "none of these",
+            'C'
+        },
+        {
+            "What does the keyword 'break' do inside a switch-case?",
+            "Restarts the loop", "Exits the switch block", "Pauses execution", "Deletes variable",
+            'B'
+        },
+        {
+            "What is the index of the first element in a C array?",
+            "1", "-1", "0", "Depends on compiler",
+            'C'
+        },
+        {
+            "Which operator is used to get the memory address of a variable?",
+            "*", "&", "->", "%",
+            'B'
+        },
+        {
+            "Which file mode is used to add new data at the end of an existing file?",
+            "r", "w", "a", "rb",
+            'C'
+        },
+        {
+            "Which standard function finds the length of a string?",
+            "strrev()", "strcpy()", "strcmp()", "strlen()",
+            'D'
+        }
+    };
+
+    printf("==================================================\n");
+    printf("         BCA MINI PROJECT: C QUIZ SYSTEM          \n");
+    printf("==================================================\n\n");
+
+    // Get student details
+    printf("Enter your Name: ");
+    fgets(studentName, sizeof(studentName), stdin);
+
+    // Remove the trailing newline character from the name
+    studentName[strcspn(studentName, "\n")] = '\0';
+
+    printf("\nWelcome, %s! The quiz will now begin.\n", studentName);
+    printf("--------------------------------------------------\n\n");
+
+    // Quiz loop
+    for (int i = 0; i < totalQuestions; i++) {
+        printf("Q%d. %s\n", i + 1, q[i].text);
+        printf("   A) %s\n", q[i].optA);
+        printf("   B) %s\n", q[i].optB);
+        printf("   C) %s\n", q[i].optC);
+        printf("   D) %s\n", q[i].optD);
+
+        printf("Your Choice (A/B/C/D): ");
+        scanf(" %c", &userAns);
+
+        // Convert lowercase to uppercase using ASCII subtraction
+        if (userAns >= 'a' && userAns <= 'z') {
+            userAns = userAns - 32;
+        }
+
+        // Validate answer
+        if (userAns == q[i].ans) {
+            printf(">> Correct Answer!\n\n");
+            score++;
+        } else {
+            printf(">> Wrong! The correct answer was [%c].\n\n", q[i].ans);
+        }
+    }
+
+    // Display final score on screen
+    printf("==================================================\n");
+    printf("                   QUIZ OVER                      \n");
+    printf("==================================================\n");
+    printf("Candidate : %s\n", studentName);
+    printf("Score     : %d out of %d\n", score, totalQuestions);
+    printf("Percentage: %.2f%%\n", ((float)score / totalQuestions) * 100);
+    printf("==================================================\n\n");
+
+    // Write result to file
+    FILE *fp = fopen("result.txt", "a"); // "a" mode preserves previous attempts
+    if (fp == NULL) {
+        printf("Error: Could not save results to file.\n");
+        return 1;
+    }
+
+    // Append student score report
+    fprintf(fp, "Name: %s | Score: %d/%d | Percentage: %.2f%%\n",
+            studentName, score, totalQuestions, ((float)score / totalQuestions) * 100);
+
+    fclose(fp); // Close the file stream
+
+    printf(">> Result successfully saved to 'result.txt'!\n");
+
+    return 0;
+}
